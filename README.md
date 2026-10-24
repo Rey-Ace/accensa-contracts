@@ -40,6 +40,15 @@ Accensa bridges x402 to Stellar via two Soroban smart contracts:
 1. **ReceiptAnchor** — Merchants batch and anchor payment receipt roots on-chain using Merkle trees, giving agents verifiable proof of payment that survives server loss.
 2. **RefundVault** — A policy-bounded vault holding merchant float for automated refunds, restricted by time windows, balance limits, and merchant authorization.
 
+**ReceiptAnchor is immutable; RefundVault is admin-upgradeable.** The anchor ships
+with no upgrade entry point and no `update_current_contract_wasm`, so anchored
+receipts verify against one well-known contract ID for the life of the deployment.
+The vault, which holds live merchant float, exposes a deliberate two-phase
+`migrate_state` + `upgrade_wasm` path that is strictly `admin.require_auth()`-gated.
+Both postures are security choices, not omissions: see
+[ADR 003](docs/ADR-003-upgradeability.md) and
+[REFUND_VAULT_MIGRATION.md](docs/REFUND_VAULT_MIGRATION.md).
+
 ## Enforced Invariants & Test Coverage Mapping
 
 Enforced invariants, each covered by a test:
