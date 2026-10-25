@@ -1,1 +1,4 @@
-// benchmark suite
+#!/usr/bin/env bash
+set -euo pipefail
+
+# benchmark suite
